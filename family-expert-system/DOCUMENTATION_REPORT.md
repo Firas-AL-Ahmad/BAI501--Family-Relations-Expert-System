@@ -1,9 +1,17 @@
-# BAI501 — Family Relations Expert System (PyDatalog)
+#**BAI501 — Family Relations Expert System (PyDatalog)**
+
+**Doctor Name:**
+
+- Bassel ALKHATIB
 
 **Student Name(s) & ID(s):**
-- Bassel ALKHATIB, 12345
 
-**Note:** This project runs fully on Google Colab; no external files (No CSV) are required.
+- feras_190479
+- Karem_161687
+- nermin_258202
+- Lama_219293
+
+**Note:** This notebook runs fully online on Google Colab. It does not require any external CSV files. Each question's output is printed directly below its corresponding code cell.
 
 ---
 
@@ -31,18 +39,18 @@ The project relies on the following tools:
 
 This table provides a concise inventory of every relevant file in the `family-expert-system/` repository.
 
-| Path | Type | Purpose | Key Contents | Used By | Safe to Remove? | Notes |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `family_expert_system.ipynb` | Notebook | **Core Project File.** Contains all facts, rules, queries, and outputs. | All logic for Q1–Q9. | Final Deliverable | **No** | This is the only file required for runtime. |
-| `README.md` | Markdown | Project overview and instructions. | How to run, project structure. | General Info | No | Provides essential context for the project. |
-| `src/facts.py` | Python Module | Loads facts from a CSV file. | `load_facts_into_pydatalog` | Historical | Yes | Logic was migrated into the notebook. |
-| `src/rules.py` | Python Module | Defines all family relationship rules. | `define_family_rules` | Historical | Yes | Logic was migrated into the notebook. |
-| `src/queries.py` | Python Module | Executes queries against the rules. | `run_all_queries` | Historical | Yes | Logic was migrated into the notebook. |
-| `data/family_facts.csv` | Data (CSV) | Contains the raw family data. | Names, genders, parents, spouses. | Historical | Yes | Facts are now hardcoded in the notebook. |
-| `tests/test_relations.py` | Python Module | Unit tests for the modularized code. | `pytest` functions. | Historical | Yes | Tests the `.py` scripts, not the notebook. |
-| `report.pdf` | Document | A previous version of the project report. | Project summary. | Historical | Yes | Superseded by this `DOCUMENTATION_REPORT.md`. |
-| `SUMMARY.md` | Markdown | A brief, high-level summary. | Project goals. | Historical | Yes | Content is covered in this report. |
-| `requirements.txt` | Text | Lists project dependencies. | `pandas`, `pyDatalog`. | Historical | Yes | Dependencies are installed via `!pip` in the notebook. |
+| Path                         | Type          | Purpose                                                                 | Key Contents                      | Used By           | Safe to Remove? | Notes                                                  |
+| :--------------------------- | :------------ | :---------------------------------------------------------------------- | :-------------------------------- | :---------------- | :-------------- | :----------------------------------------------------- |
+| `family_expert_system.ipynb` | Notebook      | **Core Project File.** Contains all facts, rules, queries, and outputs. | All logic for Q1–Q9.              | Final Deliverable | **No**          | This is the only file required for runtime.            |
+| `README.md`                  | Markdown      | Project overview and instructions.                                      | How to run, project structure.    | General Info      | No              | Provides essential context for the project.            |
+| `src/facts.py`               | Python Module | Loads facts from a CSV file.                                            | `load_facts_into_pydatalog`       | Historical        | Yes             | Logic was migrated into the notebook.                  |
+| `src/rules.py`               | Python Module | Defines all family relationship rules.                                  | `define_family_rules`             | Historical        | Yes             | Logic was migrated into the notebook.                  |
+| `src/queries.py`             | Python Module | Executes queries against the rules.                                     | `run_all_queries`                 | Historical        | Yes             | Logic was migrated into the notebook.                  |
+| `data/family_facts.csv`      | Data (CSV)    | Contains the raw family data.                                           | Names, genders, parents, spouses. | Historical        | Yes             | Facts are now hardcoded in the notebook.               |
+| `tests/test_relations.py`    | Python Module | Unit tests for the modularized code.                                    | `pytest` functions.               | Historical        | Yes             | Tests the `.py` scripts, not the notebook.             |
+| `report.pdf`                 | Document      | A previous version of the project report.                               | Project summary.                  | Historical        | Yes             | Superseded by this `DOCUMENTATION_REPORT.md`.          |
+| `SUMMARY.md`                 | Markdown      | A brief, high-level summary.                                            | Project goals.                    | Historical        | Yes             | Content is covered in this report.                     |
+| `requirements.txt`           | Text          | Lists project dependencies.                                             | `pandas`, `pyDatalog`.            | Historical        | Yes             | Dependencies are installed via `!pip` in the notebook. |
 
 ---
 
@@ -51,6 +59,7 @@ This table provides a concise inventory of every relevant file in the `family-ex
 The model represents people as strings and defines relationships using PyDatalog predicates.
 
 ### Base Predicates
+
 - `is_male(Person)`: Asserts `Person` is male. (e.g., `is_male('John')`)
 - `is_female(Person)`: Asserts `Person` is female. (e.g., `is_female('Mary')`)
 - `father(Father, Child)`: Asserts `Father` is the father of `Child`. (e.g., `father('John', 'David')`)
@@ -58,12 +67,14 @@ The model represents people as strings and defines relationships using PyDatalog
 - `spouse(Person1, Person2)`: Asserts `Person1` and `Person2` are married. (e.g., `spouse('John', 'Mary')`)
 
 ### Core Predicates
+
 - `parent(Parent, Child)`: `Parent` is the father or mother of `Child`. (e.g., `parent('John', 'David')`)
 - `child(Child, Parent)`: `Child` is the son or daughter of `Parent`. (e.g., `child('David', 'John')`)
 - `son(Son, Parent)`: `Son` is the male child of `Parent`. (e.g., `son('David', 'John')`)
 - `daughter(Daughter, Parent)`: `Daughter` is the female child of `Parent`. (e.g., `daughter('Emma', 'John')`)
 
 ### Siblings
+
 - `sibling(Person1, Person2)`: `Person1` and `Person2` share at least one parent. (e.g., `sibling('David', 'Emma')`)
 - `full_sibling(Person1, Person2)`: Siblings who share both parents. (e.g., `full_sibling('David', 'Emma')`)
 - `half_sibling(Person1, Person2)`: Siblings who share only one parent. (e.g., `half_sibling('Ivy', 'Kevin')`)
@@ -71,6 +82,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - `sister(Sister, Person)`: `Sister` is the female sibling of `Person`. (e.g., `sister('Emma', 'David')`)
 
 ### Ancestry
+
 - `grandparent(GP, GC)`: `GP` is the parent of a parent of `GC`. (e.g., `grandparent('John', 'Paul')`)
 - `grandfather(GF, GC)`: A male grandparent. (e.g., `grandfather('John', 'Paul')`)
 - `grandmother(GM, GC)`: A female grandparent. (e.g., `grandmother('Mary', 'Paul')`)
@@ -79,6 +91,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - `descendant(D, A)`: The inverse of ancestor. (e.g., `descendant('George', 'John')`)
 
 ### Extended Family
+
 - `uncle(Uncle, Person)`: `Uncle` is the brother of `Person`'s parent. (e.g., `uncle('Michael', 'Nora')`)
 - `aunt(Aunt, Person)`: `Aunt` is the sister of `Person`'s parent. (e.g., `aunt('Diana', 'Paul')`)
 - `first_cousin(P1, P2)`: People whose parents are siblings. (e.g., `first_cousin('Nora', 'Kevin')`)
@@ -86,6 +99,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - `cousin(P1, P2)`: A general term for first or second cousins.
 
 ### In-Laws
+
 - `mother_in_law(MIL, Person)`: `MIL` is the mother of `Person`'s spouse. (e.g., `mother_in_law('Mary', 'Sophia')`)
 - `father_in_law(FIL, Person)`: `FIL` is the father of `Person`'s spouse. (e.g., `father_in_law('John', 'Sophia')`)
 - `sibling_in_law(SIL, Person)`: `SIL` is the sibling of `Person`'s spouse. (e.g., `sibling_in_law('Emma', 'Michael')`)
@@ -95,12 +109,14 @@ The model represents people as strings and defines relationships using PyDatalog
 - `nephew(Nephew, Person)`: `Nephew` is the son of `Person`'s sibling. (e.g., `nephew('Michael', 'Diana')`)
 
 ### Step Relationships
+
 - `step_parent(SP, SC)`: `SP` is the spouse of `SC`'s parent, but not a biological parent. (e.g., `step_parent('Peter', 'David')`)
 - `step_child(SC, SP)`: The inverse of `step_parent`. (e.g., `step_child('David', 'Peter')`)
 - `step_sibling(P1, P2)`: People who share a step-parent. (e.g., `step_sibling('Oliver', 'Emily')`)
 - `step_grandparent(SGP, SGC)`: The step-parent of a parent. (e.g., `step_grandparent('Peter', 'Paul')`)
 
 ### Advanced (Q8)
+
 - `adoptive_parent(AP, AC)`: `AP` is the adoptive father or mother of `AC`. (e.g., `adoptive_parent('Anna', 'Isla')`)
 - `adoptive_child(AC, AP)`: The inverse of `adoptive_parent`.
 - `married_more_than_once(Person)`: `Person` has had more than one spouse. (e.g., `married_more_than_once('Mary')`)
@@ -112,6 +128,7 @@ The model represents people as strings and defines relationships using PyDatalog
 ## Rules by Question (Q1–Q9)
 
 ### Q1: Individuals and Basic Relationships
+
 - **Question Text**: Define the foundational knowledge: individuals, gender, parents, and spouses.
 - **Solution Idea**: Assert base facts using `+ is_male(...)`, `+ father(...)`, etc. Define the fundamental `parent(P, C)` rule as a person who is either a father or a mother.
 - **Key Rule**: `parent(P, C) <= father(P, C)` and `parent(P, C) <= mother(P, C)`.
@@ -119,6 +136,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of parents, children, and spouses for specific individuals.
 
 ### Q2: Core Family Roles
+
 - **Question Text**: Define `child`, `son`, and `daughter`.
 - **Solution Idea**: These roles are derived from the `parent` relationship and gender facts.
 - **Key Rules**:
@@ -131,6 +149,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of sons and daughters for a given parent.
 
 ### Q3: Sibling Logic
+
 - **Question Text**: Define rules for `sibling`, `full_sibling`, `half_sibling`, `brother`, and `sister`.
 - **Solution Idea**: Siblings share at least one parent. Full siblings share both; half-siblings share one but not both.
 - **Key Rules**:
@@ -143,6 +162,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of siblings and half-siblings.
 
 ### Q4: Ancestry and Descendants
+
 - **Question Text**: Define multi-generational relationships like `grandparent`, `ancestor`, and `descendant`.
 - **Solution Idea**: `grandparent` is a parent of a parent. `ancestor` is defined recursively.
 - **Key Rules**:
@@ -155,6 +175,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of all ancestors or descendants for an individual.
 
 ### Q5: Extended Family (uncle/aunt/cousins)
+
 - **Question Text**: Define rules for uncles, aunts, and cousins.
 - **Solution Idea**: These are built on parent and sibling relationships. An uncle is a brother of a parent; cousins have parents who are siblings.
 - **Key Rules**:
@@ -166,6 +187,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of extended family members.
 
 ### Q6: Spouse Symmetry & In-Laws
+
 - **Question Text**: Define relationships that arise from marriage.
 - **Solution Idea**: In-laws are relatives of a spouse. For example, a mother-in-law is the mother of one's spouse.
 - **Key Rules**:
@@ -178,6 +200,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of in-law relationships.
 
 ### Q7: Step Relationships
+
 - **Question Text**: Define relationships formed through remarriage.
 - **Solution Idea**: A step-parent is the spouse of a parent, but not a biological parent. Other step-relations derive from this.
 - **Key Rule**: `step_parent(S, C) <= spouse(S, P) & parent(P, C) & ~parent(S, C)`.
@@ -185,6 +208,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of step-relatives.
 
 ### Q8: Advanced Family Queries
+
 - **Question Text**: Explore complex structures like adoption, multiple marriages, and step-cousins.
 - **Solution Idea**: These rules handle nuanced, blended family dynamics.
 - **Key Rules**:
@@ -197,6 +221,7 @@ The model represents people as strings and defines relationships using PyDatalog
 - **Expected Output**: Lists of individuals matching these complex criteria.
 
 ### Q9: Generalized/Utility Queries
+
 - **Question Text**: Introduce reusable Python functions to answer structural questions about the family graph.
 - **Solution Idea**: Use Python functions to wrap PyDatalog queries, allowing for more complex logic like graph traversal (BFS) to find relatives within N generations or identify disconnected family groups.
 - **Key Functions**: `relatives_within_generations(person, n)`, `find_connected_components()`.
@@ -234,6 +259,7 @@ The notebook itself can be considered self-verifying. Each query in the `OUTPUT`
 ## Appendix
 
 ### Glossary
+
 - **Ancestor vs. Grandparent**: A grandparent is an ancestor exactly two generations back. An ancestor can be any number of generations back (parent, grandparent, great-grandparent, etc.).
 - **Cousin Degrees**:
   - **First Cousins**: Share grandparents.
