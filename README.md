@@ -32,4 +32,4 @@ The notebook is organized sequentially to make it easy to follow and grade:
 
 For a complete, detailed explanation of the project, including a file-by-file overview and a deep dive into the rules and queries for each question, please see the full project report:
 
-- **[View the Full Documentation Report](DOCUMENTATION_REPORT.md)**
+- **[View the Full Documentation Report](./family-expert-system/DOCUMENTATION_REPORT.md)**
